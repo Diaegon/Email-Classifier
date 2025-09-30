@@ -20,6 +20,32 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+@app.get("/debug")
+def debug() -> dict:
+    """Debug endpoint para verificar configuração"""
+    _frontend_paths = [
+        Path(__file__).resolve().parents[2] / "frontend",  # Local
+        Path("/app/apps/frontend"),  # Railway
+        Path("./apps/frontend"),  # Railway alternativo
+        Path("../frontend"),  # Fallback
+    ]
+    
+    result = {
+        "current_file": __file__,
+        "working_dir": os.getcwd(),
+        "paths_tested": []
+    }
+    
+    for path in _frontend_paths:
+        exists = path.exists()
+        result["paths_tested"].append({
+            "path": str(path),
+            "exists": exists,
+            "files": list(path.iterdir()) if exists else []
+        })
+    
+    return result
+
 @app.get("/health")
 def health() -> dict:
     """Health check endpoint para Railway"""
@@ -45,16 +71,6 @@ def health() -> dict:
             "timestamp": "2024-01-01T00:00:00Z"
         }
 
-@app.get("/")
-def root() -> dict:
-    """Root endpoint"""
-    return {
-        "message": "Email Classifier API",
-        "docs": "/docs",
-        "health": "/health",
-        "version": "1.0.0"
-    }
-
 app.include_router(classify_router, prefix="/api")
 app.include_router(clients_router, prefix="/api")
 
@@ -75,15 +91,43 @@ def setup_database():
 setup_database()
 
 # Servir frontend estático (apps/frontend)
-_frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
-print(f"Frontend directory: {_frontend_dir}")
-print(f"Frontend exists: {_frontend_dir.exists()}")
-if _frontend_dir.exists():
+# Tentar diferentes caminhos para compatibilidade com Railway
+_frontend_paths = [
+    Path(__file__).resolve().parents[2] / "frontend",  # Local
+    Path("/app/apps/frontend"),  # Railway
+    Path("./apps/frontend"),  # Railway alternativo
+    Path("../frontend"),  # Fallback
+]
+
+_frontend_dir = None
+for path in _frontend_paths:
+    print(f"Tentando frontend em: {path}")
+    if path.exists():
+        _frontend_dir = path
+        print(f"✅ Frontend encontrado em: {path}")
+        break
+
+if _frontend_dir:
     print(f"Mounting frontend from: {_frontend_dir}")
+    # Listar arquivos do frontend para debug
+    try:
+        frontend_files = list(_frontend_dir.iterdir())
+        print(f"Frontend files: {[f.name for f in frontend_files]}")
+    except Exception as e:
+        print(f"Erro ao listar arquivos do frontend: {e}")
+    
     app.mount("/", StaticFiles(directory=str(_frontend_dir), html=True), name="frontend")
+    print("✅ Frontend montado com sucesso!")
 else:
     # Fallback se frontend não existir
-    print("Frontend not found, using fallback")
+    print("❌ Frontend not found in any path, using fallback")
     @app.get("/")
     def root() -> dict:
-        return {"message": "Email Classifier API", "docs": "/docs", "health": "/health"}
+        return {
+            "message": "Email Classifier API", 
+            "docs": "/docs", 
+            "health": "/health",
+            "debug": "/debug",
+            "error": "Frontend not found",
+            "tried_paths": [str(p) for p in _frontend_paths]
+        }
