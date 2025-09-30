@@ -91,8 +91,17 @@ cd apps/backend
 poetry run pytest -q
 ```
 
-## Deploy (sugestão)
+## Deploy
 
+### Railway (Recomendado)
+1. Conecte seu repositório no [Railway](https://railway.app)
+2. Configure as variáveis de ambiente:
+   - `LLM_PROVIDER=google`
+   - `GOOGLE_API_KEY=sua_chave_aqui`
+   - `GOOGLE_MODEL=gemini-2.0-flash`
+3. Deploy automático será executado
+
+### Outras opções
 - Backend: Render / Fly.io
 - Frontend: já é servido pelo backend. Alternativamente, hospedar `apps/frontend` em Vercel e apontar para a API pública.
 
