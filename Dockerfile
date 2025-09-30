@@ -4,9 +4,8 @@ FROM python:3.12-slim
 # Set working directory
 WORKDIR /app
 
-# Copy requirements first for better caching
-COPY requirements.txt .
-COPY apps/backend/pyproject.toml ./apps/backend/
+# Copy the entire project first
+COPY . .
 
 # Create virtual environment and install dependencies
 RUN python -m venv /opt/venv
@@ -15,9 +14,6 @@ ENV PATH="/opt/venv/bin:$PATH"
 # Install dependencies
 RUN pip install --upgrade pip
 RUN pip install -e ./apps/backend
-
-# Copy the rest of the application
-COPY . .
 
 # Expose port
 EXPOSE 8000

@@ -22,7 +22,7 @@ dependencies = [
 ]
 
 [tool.poetry]
-packages = [{include = "email_classifier_llm"}]
+packages = [{include = "email_classifier_llm", from = "."}]
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^8.4.2"
