@@ -41,16 +41,35 @@ def start_app():
     """Inicia a aplicação FastAPI"""
     print("🚀 Iniciando aplicação...")
     
+    # Configurar porta
+    port = int(os.getenv("PORT", 8000))
+    print(f"📡 Porta configurada: {port}")
+    
     try:
         import uvicorn
-        uvicorn.run(
+        print("✅ Uvicorn importado com sucesso")
+        
+        # Configurar uvicorn
+        config = uvicorn.Config(
             "email_classifier_llm.main:app",
             host="0.0.0.0",
-            port=int(os.getenv("PORT", 8000)),
-            log_level="info"
+            port=port,
+            log_level="info",
+            access_log=True
         )
+        
+        print("✅ Configuração do Uvicorn criada")
+        server = uvicorn.Server(config)
+        print("✅ Servidor Uvicorn criado")
+        
+        print(f"🌐 Iniciando servidor na porta {port}...")
+        server.run()
+        
     except Exception as e:
         print(f"❌ Erro ao iniciar aplicação: {e}")
+        print(f"❌ Tipo do erro: {type(e).__name__}")
+        import traceback
+        print(f"❌ Traceback: {traceback.format_exc()}")
         sys.exit(1)
 
 def main():

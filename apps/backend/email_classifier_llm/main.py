@@ -22,7 +22,38 @@ app.add_middleware(
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok", "message": "Email Classifier API is running"}
+    """Health check endpoint para Railway"""
+    try:
+        # Verificar se o banco está acessível
+        from .database import engine
+        from sqlalchemy import text
+        
+        with engine.connect() as conn:
+            conn.execute(text("SELECT 1"))
+        
+        return {
+            "status": "healthy",
+            "message": "Email Classifier API is running",
+            "database": "connected",
+            "timestamp": "2024-01-01T00:00:00Z"
+        }
+    except Exception as e:
+        return {
+            "status": "unhealthy",
+            "message": f"Database connection failed: {str(e)}",
+            "database": "disconnected",
+            "timestamp": "2024-01-01T00:00:00Z"
+        }
+
+@app.get("/")
+def root() -> dict:
+    """Root endpoint"""
+    return {
+        "message": "Email Classifier API",
+        "docs": "/docs",
+        "health": "/health",
+        "version": "1.0.0"
+    }
 
 app.include_router(classify_router, prefix="/api")
 app.include_router(clients_router, prefix="/api")
