@@ -8,5 +8,23 @@
     "healthcheckTimeout": 300,
     "restartPolicyType": "ON_FAILURE",
     "restartPolicyMaxRetries": 10
-  }
+  },
+  "services": [
+    {
+      "name": "email-classifier-api",
+      "source": ".",
+      "build": {
+        "builder": "DOCKERFILE"
+      }
+    },
+    {
+      "name": "postgres-db",
+      "image": "postgres:15",
+      "variables": {
+        "POSTGRES_DB": "email_classifier",
+        "POSTGRES_USER": "postgres",
+        "POSTGRES_PASSWORD": "password"
+      }
+    }
+  ]
 }

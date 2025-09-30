@@ -202,11 +202,36 @@ poetry run pytest -q
 
 ### Railway (Recomendado)
 1. Conecte seu repositório no [Railway](https://railway.app)
-2. Configure as variáveis de ambiente:
+2. Adicione um serviço PostgreSQL:
+   - Vá em "New Project" → "Database" → "PostgreSQL"
+   - Ou use o `railway.json` já configurado
+3. Configure as variáveis de ambiente:
    - `LLM_PROVIDER=google`
    - `GOOGLE_API_KEY=sua_chave_aqui`
    - `GOOGLE_MODEL=gemini-2.0-flash`
-3. Deploy automático será executado
+   - `DB_DATABASE_URL=${{Postgres.DATABASE_URL}}` (conecta automaticamente ao PostgreSQL)
+4. Deploy automático será executado
+
+**⚠️ Importante**: SQLite não funciona em produção no Railway devido ao sistema de arquivos efêmero. Use PostgreSQL ou MySQL.
+
+### Migração para Produção
+
+Se você já tem dados no SQLite local e quer migrar para PostgreSQL:
+
+```bash
+# 1. Configure a variável de ambiente com a URL do PostgreSQL
+export DB_DATABASE_URL="postgresql://usuario:senha@host:5432/database"
+
+# 2. Execute o script de migração
+python migrate_to_production.py
+```
+
+O script irá:
+- ✅ Conectar ao SQLite local
+- ✅ Conectar ao PostgreSQL de produção
+- ✅ Migrar todos os clientes
+- ✅ Verificar duplicatas
+- ✅ Confirmar a migração
 
 ### Outras opções
 - Backend: Render / Fly.io
