@@ -1,9 +1,17 @@
 [phases.setup]
-nixPkgs = ["python312", "python312Packages.pip"]
-cmds = ["python3.12 -m venv /opt/venv", ". /opt/venv/bin/activate && pip install --upgrade pip"]
+nixPkgs = ["python39", "pip"]
 
 [phases.install]
-cmds = [". /opt/venv/bin/activate && cd apps/backend && pip install -e ."]
+cmds = [
+  "cd apps/backend",
+  "pip install -r requirements.txt"
+]
+
+[phases.build]
+cmds = [
+  "cd apps/backend",
+  "python -c \"from email_classifier_llm.database import init_database; init_database()\""
+]
 
 [start]
-cmd = ". /opt/venv/bin/activate && cd apps/backend && uvicorn email_classifier_llm.main:app --host 0.0.0.0 --port $PORT"
+cmd = "cd apps/backend && python deploy.py"

@@ -2,6 +2,8 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from pathlib import Path
+import os
+import sys
 
 from .routers.classify import router as classify_router
 from .routers.clients import router as clients_router
@@ -25,8 +27,21 @@ def health() -> dict:
 app.include_router(classify_router, prefix="/api")
 app.include_router(clients_router, prefix="/api")
 
-# Inicializar banco de dados
-init_database()
+# Inicializar banco de dados com tratamento de erro
+def setup_database():
+    """Configura o banco de dados com tratamento de erro"""
+    try:
+        print("🔄 Inicializando banco de dados...")
+        init_database()
+        print("✅ Banco de dados inicializado com sucesso!")
+    except Exception as e:
+        print(f"❌ Erro ao inicializar banco de dados: {e}")
+        print("⚠️  Aplicação continuará sem banco de dados")
+        # Em produção, você pode querer falhar aqui
+        # sys.exit(1)
+
+# Executar setup do banco
+setup_database()
 
 # Servir frontend estático (apps/frontend)
 _frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
