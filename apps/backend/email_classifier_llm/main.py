@@ -20,13 +20,18 @@ app.add_middleware(
 def health() -> dict:
     return {"status": "ok", "message": "Email Classifier API is running"}
 
-@app.get("/")
-def root() -> dict:
-    return {"message": "Email Classifier API", "docs": "/docs", "health": "/health"}
-
 app.include_router(classify_router, prefix="/api")
 
 # Servir frontend estático (apps/frontend)
 _frontend_dir = Path(__file__).resolve().parents[2] / "frontend"
+print(f"Frontend directory: {_frontend_dir}")
+print(f"Frontend exists: {_frontend_dir.exists()}")
 if _frontend_dir.exists():
+    print(f"Mounting frontend from: {_frontend_dir}")
     app.mount("/", StaticFiles(directory=str(_frontend_dir), html=True), name="frontend")
+else:
+    # Fallback se frontend não existir
+    print("Frontend not found, using fallback")
+    @app.get("/")
+    def root() -> dict:
+        return {"message": "Email Classifier API", "docs": "/docs", "health": "/health"}
