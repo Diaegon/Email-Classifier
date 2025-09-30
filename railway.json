@@ -6,7 +6,7 @@
     "nixpacksConfig": {
       "providers": ["python"],
       "phases": {
-        "setup": "python -m venv /opt/venv && . /opt/venv/bin/activate && pip install --upgrade pip",
+        "setup": "python3.12 -m venv /opt/venv && . /opt/venv/bin/activate && pip install --upgrade pip",
         "install": "cd apps/backend && pip install -e ."
       }
     }
