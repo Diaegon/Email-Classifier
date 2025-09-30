@@ -4,6 +4,8 @@ from fastapi.staticfiles import StaticFiles
 from pathlib import Path
 
 from .routers.classify import router as classify_router
+from .routers.clients import router as clients_router
+from .database import init_database
 
 app = FastAPI(title="Email Classifier LLM API")
 
@@ -21,6 +23,10 @@ def health() -> dict:
     return {"status": "ok", "message": "Email Classifier API is running"}
 
 app.include_router(classify_router, prefix="/api")
+app.include_router(clients_router, prefix="/api")
+
+# Inicializar banco de dados
+init_database()
 
 # Servir frontend estático (apps/frontend)
 _frontend_dir = Path(__file__).resolve().parents[2] / "frontend"

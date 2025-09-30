@@ -1,33 +1,128 @@
 * { box-sizing: border-box; }
-html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; color: #0f172a; background: #f8fafc; }
+html, body { margin: 0; padding: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji"; color: #1e3a8a; background: #f0f9ff; }
 
-.container { max-width: 960px; margin: 0 auto; padding: 1rem; }
+.container { max-width: 1400px; margin: 0 auto; padding: 1rem; }
 header.container { padding-top: 2rem; }
 h1 { margin: 0 0 .5rem 0; font-size: 1.8rem; }
 p { line-height: 1.6; }
 
-.card { background: #ffffff; border: 1px solid #e2e8f0; border-radius: 12px; box-shadow: 0 1px 2px rgba(0,0,0,0.04); padding: 1rem; }
+.card { background: #ffffff; border: 1px solid #bfdbfe; border-radius: 12px; box-shadow: 0 1px 3px rgba(59, 130, 246, 0.1); }
 
 .field { margin-bottom: 1rem; }
-label { display: block; font-weight: 600; margin-bottom: .375rem; }
-textarea { width: 100%; padding: .75rem; border: 1px solid #cbd5e1; border-radius: 8px; resize: vertical; font: inherit; }
+label { display: block; font-weight: 600; margin-bottom: .375rem; color: #1e40af; }
+textarea { width: 100%; padding: .75rem; border: 1px solid #93c5fd; border-radius: 8px; resize: vertical; font: inherit; }
 input[type="file"] { display: block; }
-small { color: #64748b; }
+small { color: #3b82f6; }
 
-.divider { position: relative; text-align: center; margin: 1rem 0; color: #94a3b8; }
+.divider { position: relative; text-align: center; margin: 1rem 0; color: #60a5fa; }
 .divider span { background: #fff; padding: 0 .5rem; position: relative; z-index: 2; }
-.divider::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid #e2e8f0; z-index: 1; }
+.divider::before { content: ""; position: absolute; left: 0; right: 0; top: 50%; border-top: 1px solid #bfdbfe; z-index: 1; }
 
-button { background: #3b82f6; color: white; border: none; padding: .75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; }
-button:disabled { background: #93c5fd; cursor: not-allowed; }
+button { background: #2563eb; color: white; border: none; padding: .75rem 1rem; border-radius: 8px; cursor: pointer; font-weight: 600; transition: all 0.2s ease; }
+button:hover { background: #1d4ed8; transform: translateY(-1px); }
+button:disabled { background: #93c5fd; cursor: not-allowed; transform: none; }
 
 #result { margin-top: 1rem; }
 .hidden { display: none; }
 .result-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; }
-.reply pre { background: #0b1020; color: #e2e8f0; padding: .75rem; border-radius: 8px; overflow: auto; }
+.client-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+.reply pre { background: #1e3a8a; color: #dbeafe; padding: .75rem; border-radius: 8px; overflow: auto; }
 
-footer.container { text-align: center; padding: 2rem 1rem; color: #64748b; }
+/* Estilos para a seção de clientes */
+.client-section .card {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.client-section .card-body {
+  padding: 0.75rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.client-section .card-title {
+  font-size: 1rem;
+  margin-bottom: 0.75rem;
+}
+
+.client-section .badge {
+  font-size: 0.7rem;
+}
+
+/* Estilos para a área de resposta editável */
+.client-section #client-response {
+  resize: vertical;
+}
+
+.client-section #copy-response-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.2s ease;
+}
+
+.client-section #copy-response-btn:hover {
+  background-color: #2563eb;
+  border-color: #2563eb;
+  color: white;
+}
+
+.client-section #copy-response-btn svg {
+  margin-right: 0.5rem;
+}
+
+/* Estilos para o botão de limpar arquivo */
+.email-section .input-group .btn {
+  border-top-left-radius: 0;
+  border-bottom-left-radius: 0;
+  border-left: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 45px;
+  transition: all 0.2s ease;
+}
+
+.email-section .input-group .btn:hover {
+  background-color: #dc2626;
+  transform: scale(1.05);
+}
+
+.email-section .input-group .form-control {
+  border-top-right-radius: 0;
+  border-bottom-right-radius: 0;
+}
+
+/* Estilos para a seção de email */
+.email-section .card {
+  height: 100%;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.email-section .card-body {
+  flex: 1;
+  overflow-y: auto;
+  padding: 1rem;
+}
+
+/* Responsividade para as seções */
+@media (max-width: 1024px) {
+  .client-section .card {
+    height: 400px;
+  }
+  
+  .email-section .card {
+    height: auto;
+  }
+}
+
+footer.container { text-align: center; padding: 2rem 1rem; color: #3b82f6; }
 
 @media (max-width: 720px) {
   .result-grid { grid-template-columns: 1fr; }
+  .client-result-grid { grid-template-columns: 1fr; }
 }

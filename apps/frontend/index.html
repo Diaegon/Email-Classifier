@@ -7,54 +7,188 @@
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
   <link rel="stylesheet" href="/styles.css" />
   <meta name="color-scheme" content="light" />
-  <meta name="theme-color" content="#0d6efd" />
+  <meta name="theme-color" content="#2563eb" />
   <style>
+    /* Layout principal com duas colunas - 70% email, 30% clientes */
+    .main-container { 
+      display: grid; 
+      grid-template-columns: 7fr 3fr; 
+      gap: 2rem; 
+      height: calc(100vh - 200px); /* Altura total menos header */
+      min-height: 600px;
+    }
+    .email-section { 
+      grid-column: 1; 
+      display: flex;
+      flex-direction: column;
+    }
+    .client-section { 
+      grid-column: 2; 
+      display: flex;
+      flex-direction: column;
+    }
+    
+    /* Ajustes para as seções ocuparem toda a altura disponível */
+    .email-section .card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+    
+    .client-section .card {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      max-height: 100%;
+    }
+    
     /* ajustes mínimos para casar com Bootstrap e manter grid do resultado */
     .result-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; }
-    @media (max-width: 720px) { .result-grid { grid-template-columns: 1fr; } }
+    .client-result-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; }
+    
+    /* Área de resultados do email com scroll se necessário */
+    .email-section #result {
+      flex: 1;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+    
+    /* Área de resultados dos clientes com scroll */
+    .client-section #client-results {
+      flex: 1;
+      overflow-y: auto;
+      margin-top: 1rem;
+    }
+    
+    @media (max-width: 1200px) { 
+      .main-container { 
+        grid-template-columns: 6fr 4fr; 
+        height: calc(100vh - 150px);
+      }
+    }
+    
+    @media (max-width: 1024px) { 
+      .main-container { 
+        grid-template-columns: 1fr; 
+        height: auto;
+        min-height: auto;
+      }
+      .email-section { 
+        grid-column: 1; 
+        height: auto;
+      }
+      .client-section { 
+        grid-column: 1; 
+        height: 400px;
+      }
+    }
+    
+    @media (max-width: 720px) { 
+      .result-grid { grid-template-columns: 1fr; }
+      .client-result-grid { grid-template-columns: 1fr; }
+    }
   </style>
   
 </head>
 <body class="bg-light">
   <div class="container mt-5">
-    <div class="card shadow p-4">
-      <h1 class="text-center text-primary mb-4">Email Classifier LLM</h1>
-      <p class="text-center text-muted mb-4">Classifique emails usando Inteligência Artificial</p>
-
-      <form id="classify-form" class="mb-3">
-        <div class="mb-3">
-          <label for="email-file" class="form-label">Upload de arquivo (.txt ou .pdf)</label>
-          <input id="email-file" name="file" type="file" accept=".txt,.pdf" class="form-control" />
-        </div>
-
-        <div class="text-center text-muted my-2">ou</div>
-
-        <div class="mb-3">
-          <label for="email-text" class="form-label">Ou insira o texto do email</label>
-          <textarea id="email-text" name="text" rows="6" class="form-control" placeholder="Cole aqui o conteúdo do email..."></textarea>
-          <div class="form-text">Opcional se você enviar um arquivo .txt ou .pdf</div>
-        </div>
-
-        <button id="submit-btn" type="submit" class="btn btn-primary w-100">Classificar com IA</button>
-      </form>
-
-      <section id="result" class="alert alert-info d-none mt-3">
-        <h5 class="mb-3">Resultado da Classificação</h5>
-        <div class="result-grid">
-          <div>
-            <h6 class="text-secondary mb-1">Categoria</h6>
-            <p id="res-category" class="fw-semibold mb-3">—</p>
+    <h1 class="text-center text-primary mb-4">Email Classifier LLM</h1>
+    <p class="text-center text-muted mb-4">Classifique emails e consulte dados de clientes usando Inteligência Artificial</p>
+    
+    <div class="main-container">
+      <!-- Seção de Classificação de Email (70%) -->
+      <div class="email-section">
+        <div class="card shadow">
+          <div class="card-header">
+            <h3 class="text-primary mb-0">Classificação de Email</h3>
           </div>
-          <div>
-            <h6 class="text-secondary mb-1">Motivo</h6>
-            <p id="res-reason" class="mb-3">—</p>
+          <div class="card-body">
+            <form id="classify-form" class="mb-3">
+              <div class="mb-3">
+                <label for="email-file" class="form-label">Upload de arquivo (.txt ou .pdf)</label>
+                <div class="input-group">
+                  <input id="email-file" name="file" type="file" accept=".txt,.pdf" class="form-control" />
+                  <button id="clear-file-btn" type="button" class="btn btn-outline-danger" title="Limpar arquivo">
+                    <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16">
+                      <path d="M5.5 5.5A.5.5 0 0 1 6 6v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm2.5 0a.5.5 0 0 1 .5.5v6a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5zm3 .5a.5.5 0 0 0-1 0v6a.5.5 0 0 0 1 0V6z"/>
+                      <path fill-rule="evenodd" d="M14.5 3a1 1 0 0 1-1 1H13v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4h-.5a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1H6a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1h3.5a1 1 0 0 1 1 1v1zM4.118 4 4 4.059V13a1 1 0 0 0 1 1h6a1 1 0 0 0 1-1V4.059L11.882 4H4.118zM2.5 3V2h11v1h-11z"/>
+                    </svg>
+                  </button>
+                </div>
+              </div>
+
+              <div class="text-center text-muted my-2">ou</div>
+
+              <div class="mb-3">
+                <label for="email-text" class="form-label">insira o texto do email</label>
+                <textarea id="email-text" name="text" rows="8" class="form-control" placeholder="Cole aqui o conteúdo do email..."></textarea>
+                <div class="form-text">Opcional se você enviar um arquivo .txt ou .pdf</div>
+              </div>
+
+              <button id="submit-btn" type="submit" class="btn btn-primary w-100">Classificar com IA</button>
+            </form>
+
+            <section id="result" class="alert alert-info d-none">
+              <h5 class="mb-3">Resultado da Classificação</h5>
+              <div class="result-grid">
+                <div>
+                  <h6 class="text-secondary mb-1">Categoria</h6>
+                  <p id="res-category" class="fw-semibold mb-3">—</p>
+                </div>
+                <div>
+                  <h6 class="text-secondary mb-1">Motivo</h6>
+                  <p id="res-reason" class="mb-3">—</p>
+                </div>
+              </div>
+              <div>
+                <h6 class="text-secondary mb-1">Resposta sugerida</h6>
+                <pre id="res-reply" class="mb-0" style="white-space: pre-wrap; background: #0b1020; color: #e2e8f0; padding: .75rem; border-radius: .5rem;">—</pre>
+              </div>
+            </section>
           </div>
         </div>
-        <div>
-          <h6 class="text-secondary mb-1">Resposta sugerida</h6>
-          <pre id="res-reply" class="mb-0" style="white-space: pre-wrap; background: #0b1020; color: #e2e8f0; padding: .75rem; border-radius: .5rem;">—</pre>
+      </div>
+
+      <!-- Seção de Pesquisa de Clientes (30%) -->
+      <div class="client-section">
+        <div class="card shadow">
+          <div class="card-header">
+            <h3 class="text-primary mb-0">Consulta de Clientes</h3>
+          </div>
+          <div class="card-body">
+            <form id="client-search-form" class="mb-3">
+              <div class="mb-3">
+                <label for="client-search" class="form-label">Buscar Cliente</label>
+                <input id="client-search" name="query" type="text" class="form-control" placeholder="Nome, CPF, número do cliente ou email..." />
+                <div class="form-text">Digite pelo menos 2 caracteres para buscar</div>
+              </div>
+              <button id="client-search-btn" type="submit" class="btn btn-primary w-100">Buscar Cliente</button>
+            </form>
+
+            <!-- Resultados da busca de clientes -->
+            <section id="client-results" class="d-none mb-3">
+              <h5 class="mb-3">Resultado da Busca</h5>
+              <div id="client-results-content">
+                <!-- Resultados serão inseridos aqui via JavaScript -->
+              </div>
+            </section>
+
+            <!-- Área de resposta editável -->
+            <div class="mb-3">
+              <label for="client-response" class="form-label">Resposta Personalizada</label>
+              <textarea id="client-response" name="response" rows="4" class="form-control mb-2" placeholder="A resposta da IA aparecerá aqui e poderá ser editada..."></textarea>
+              <button id="copy-response-btn" type="button" class="btn btn-outline-secondary w-100" title="Copiar resposta">
+                <svg width="16" height="16" fill="currentColor" viewBox="0 0 16 16" class="me-2">
+                  <path d="M4 1.5H3a2 2 0 0 0-2 2V14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V3.5a2 2 0 0 0-2-2h-1v1h1a1 1 0 0 1 1 1V14a1 1 0 0 1-1 1H3a1 1 0 0 1-1-1V3.5a1 1 0 0 1 1-1h1v-1z"/>
+                  <path d="M9.5 1a.5.5 0 0 1 .5.5v1a.5.5 0 0 1-.5.5h-3a.5.5 0 0 1-.5-.5v-1a.5.5 0 0 1 .5-.5h3zm-3-1A1.5 1.5 0 0 0 5 1.5v1A1.5 1.5 0 0 0 6.5 4h3A1.5 1.5 0 0 0 11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3z"/>
+                </svg>
+                Copiar Resposta
+              </button>
+              <div class="form-text">Edite a resposta conforme necessário</div>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
     </div>
   </div>
 
