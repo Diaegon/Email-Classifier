@@ -31,23 +31,59 @@ def get_engine_config():
             "echo": False  # Set to True for SQL query logging
         }
     elif DATABASE_URL.startswith("postgresql"):
-        return {
-            "echo": False,
-            "pool_pre_ping": True,  # Verifica conexões antes de usar
-            "pool_recycle": 300,    # Recicla conexões a cada 5 minutos
-        }
+        try:
+            # Verificar se psycopg2 está disponível
+            import psycopg2
+            return {
+                "echo": False,
+                "pool_pre_ping": True,  # Verifica conexões antes de usar
+                "pool_recycle": 300,    # Recicla conexões a cada 5 minutos
+            }
+        except ImportError:
+            print("⚠️  psycopg2 não encontrado, usando SQLite como fallback")
+            return {
+                "connect_args": {"check_same_thread": False},
+                "echo": False
+            }
     elif DATABASE_URL.startswith("mysql"):
-        return {
-            "echo": False,
-            "pool_pre_ping": True,
-            "pool_recycle": 300,
-        }
+        try:
+            # Verificar se pymysql está disponível
+            import pymysql
+            return {
+                "echo": False,
+                "pool_pre_ping": True,
+                "pool_recycle": 300,
+            }
+        except ImportError:
+            print("⚠️  pymysql não encontrado, usando SQLite como fallback")
+            return {
+                "connect_args": {"check_same_thread": False},
+                "echo": False
+            }
     else:
         return {"echo": False}
 
 
+# Criar engine do SQLAlchemy com fallback
+def create_database_engine():
+    """Cria engine do banco de dados com fallback para SQLite"""
+    try:
+        return create_engine(DATABASE_URL, **get_engine_config())
+    except Exception as e:
+        print(f"⚠️  Erro ao conectar com {DATABASE_URL}: {e}")
+        print("🔄 Usando SQLite como fallback...")
+        
+        # Fallback para SQLite
+        sqlite_url = "sqlite:///./email_classifier.db"
+        sqlite_config = {
+            "connect_args": {"check_same_thread": False},
+            "echo": False
+        }
+        
+        return create_engine(sqlite_url, **sqlite_config)
+
 # Criar engine do SQLAlchemy
-engine = create_engine(DATABASE_URL, **get_engine_config())
+engine = create_database_engine()
 
 # Criar SessionLocal
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)

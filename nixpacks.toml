@@ -1,8 +1,9 @@
 [phases.setup]
-nixPkgs = ["python39", "pip"]
+nixPkgs = ["python39", "pip", "postgresql"]
 
 [phases.install]
 cmds = [
+  "pip install --upgrade pip",
   "pip install -r apps/backend/requirements.txt"
 ]
 
