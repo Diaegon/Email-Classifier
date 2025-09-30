@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Email Classifier LLM</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="/styles.css" />
+  <meta name="color-scheme" content="light" />
+  <meta name="theme-color" content="#0d6efd" />
+  <style>
+    /* ajustes mínimos para casar com Bootstrap e manter grid do resultado */
+    .result-grid { display: grid; grid-template-columns: 1fr 2fr; gap: 1rem; }
+    @media (max-width: 720px) { .result-grid { grid-template-columns: 1fr; } }
+  </style>
+  
+</head>
+<body class="bg-light">
+  <div class="container mt-5">
+    <div class="card shadow p-4">
+      <h1 class="text-center text-primary mb-4">Email Classifier LLM</h1>
+      <p class="text-center text-muted mb-4">Classifique emails usando Inteligência Artificial</p>
+
+      <form id="classify-form" class="mb-3">
+        <div class="mb-3">
+          <label for="email-file" class="form-label">Upload de arquivo (.txt ou .pdf)</label>
+          <input id="email-file" name="file" type="file" accept=".txt,.pdf" class="form-control" />
+        </div>
+
+        <div class="text-center text-muted my-2">ou</div>
+
+        <div class="mb-3">
+          <label for="email-text" class="form-label">Ou insira o texto do email</label>
+          <textarea id="email-text" name="text" rows="6" class="form-control" placeholder="Cole aqui o conteúdo do email..."></textarea>
+          <div class="form-text">Opcional se você enviar um arquivo .txt ou .pdf</div>
+        </div>
+
+        <button id="submit-btn" type="submit" class="btn btn-primary w-100">Classificar com IA</button>
+      </form>
+
+      <section id="result" class="alert alert-info d-none mt-3">
+        <h5 class="mb-3">Resultado da Classificação</h5>
+        <div class="result-grid">
+          <div>
+            <h6 class="text-secondary mb-1">Categoria</h6>
+            <p id="res-category" class="fw-semibold mb-3">—</p>
+          </div>
+          <div>
+            <h6 class="text-secondary mb-1">Motivo</h6>
+            <p id="res-reason" class="mb-3">—</p>
+          </div>
+        </div>
+        <div>
+          <h6 class="text-secondary mb-1">Resposta sugerida</h6>
+          <pre id="res-reply" class="mb-0" style="white-space: pre-wrap; background: #0b1020; color: #e2e8f0; padding: .75rem; border-radius: .5rem;">—</pre>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <script src="/app.js"></script>
+  <script>
+    // Detect backend base URL automatically
+    window.BACKEND_BASE = window.location.origin;
+  </script>
+</body>
+</html>
