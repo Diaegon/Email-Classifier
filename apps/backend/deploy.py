@@ -9,6 +9,10 @@ import sys
 import subprocess
 from pathlib import Path
 
+# Adicionar o diretório do backend ao path
+backend_dir = Path(__file__).parent
+sys.path.insert(0, str(backend_dir))
+
 def run_migrations():
     """Executa migrações do banco de dados"""
     print("🔄 Executando migrações do banco de dados...")
