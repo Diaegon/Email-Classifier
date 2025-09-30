@@ -1,8 +1,9 @@
 [phases.setup]
 nixPkgs = ["python312", "python312Packages.pip"]
+cmds = ["python3.12 -m venv /opt/venv", ". /opt/venv/bin/activate && pip install --upgrade pip"]
 
 [phases.install]
-cmds = ["cd apps/backend && pip install -e ."]
+cmds = [". /opt/venv/bin/activate && cd apps/backend && pip install -e ."]
 
 [start]
-cmd = "cd apps/backend && uvicorn email_classifier_llm.main:app --host 0.0.0.0 --port $PORT"
+cmd = ". /opt/venv/bin/activate && cd apps/backend && uvicorn email_classifier_llm.main:app --host 0.0.0.0 --port $PORT"
