@@ -18,7 +18,11 @@ app.add_middleware(
 
 @app.get("/health")
 def health() -> dict:
-    return {"status": "ok"}
+    return {"status": "ok", "message": "Email Classifier API is running"}
+
+@app.get("/")
+def root() -> dict:
+    return {"message": "Email Classifier API", "docs": "/docs", "health": "/health"}
 
 app.include_router(classify_router, prefix="/api")
 

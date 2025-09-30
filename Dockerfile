@@ -23,4 +23,4 @@ ENV PYTHONPATH=/app
 ENV PYTHONUNBUFFERED=1
 
 # Start command
-CMD ["uvicorn", "apps.backend.email_classifier_llm.main:app", "--host", "0.0.0.0", "--port", "8000"]
+CMD ["sh", "-c", "uvicorn apps.backend.email_classifier_llm.main:app --host 0.0.0.0 --port ${PORT:-8000}"]
