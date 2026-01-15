@@ -1,5 +1,0 @@
-# Dependências do projeto Email Classifier
-# Este arquivo é usado pelo Railway para detectar que é um projeto Python
-
-# Instalar o pacote do backend
--e ./apps/backend

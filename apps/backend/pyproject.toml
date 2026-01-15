@@ -5,7 +5,7 @@ description = "Email classification using LLM APIs"
 authors = [
     {name = "Diego Canafistula", email = "diego.canafistula@gmail.com"}
 ]
-# readme = "README.md"
+readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
     "fastapi (>=0.118.0,<0.119.0)",

@@ -5,7 +5,7 @@ Sistema inteligente de classificação de emails para empresas do setor financei
 ## 🎯 Características
 
 ### 🤖 Classificação de Emails
-- **Classificação Inteligente**: Usa IA para analisar emails e determinar se são produtivos ou improdutivos
+- **Classificação Inteligente**: Usa IA para analisar emails e determinar se são produtivos ou improdutivos de acordo com um contexto
 - **Múltiplas APIs**: Suporte para OpenAI, Anthropic Claude, Google Gemini e Ollama
 - **Upload de Arquivos**: Suporte para arquivos `.txt` e `.pdf` com botão de limpeza
 - **Respostas Sugeridas**: Gera respostas automáticas baseadas na classificação
@@ -75,7 +75,6 @@ poetry install
 DB_DATABASE_URL=sqlite:///./email_classifier.db
 
 # Escolha uma das opções de LLM:
-
 # Opção 1: OpenAI
 LLM_PROVIDER=openai
 OPENAI_API_KEY=sua_chave_aqui

@@ -1,1 +1,0 @@
-web: python apps/backend/deploy.py
