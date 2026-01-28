@@ -27,7 +27,6 @@ async def classify(
 
     assert text is not None
     cleaned = preprocess_text(text)
-    
     if not cleaned:
         # Fallback amigável: retorna 200 com mensagem explicativa
         return JSONResponse(
@@ -42,6 +41,8 @@ async def classify(
         # Get LLM client and classify
         llm_client = get_llm_client()
         result = await llm_client.classify(cleaned)
+        
+        print(result)
         return JSONResponse(result)
     except Exception as exc:
         return JSONResponse(
